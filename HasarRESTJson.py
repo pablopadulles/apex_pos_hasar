@@ -232,13 +232,13 @@ class HasarRESTJson:
         
     def crearTicket(self, codigo, items:list, descuento:Descuento=None, tributo:Tributo=None, pago:Pago=None):
         try:
-            self.abrirDocumento(codigo)
+            res = self.abrirDocumento(codigo)
             for i in items:
                 if isinstance(i, ItemFactura):
-                    res = self.imprimirItem(i)
+                    self.imprimirItem(i)
                 else:
                     item = ItemFactura(**i)
-                    res = self.imprimirItem(item)
+                    self.imprimirItem(item)
             if descuento:
                 self.imprimirDescuentoItem(descuento)
             if tributo:
@@ -246,6 +246,7 @@ class HasarRESTJson:
             if pago:
                 self.imprimirPago(pago)
             self.cerrarDocumento()
+            return res.get('AbrirDocumento').get('NumeroComprobante')
         except Exception as e:
             print(f"Error al crear el comprobante: {e}")
             self.cancelarDocumento()
